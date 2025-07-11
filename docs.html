@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使用手册 - CodeLink</title>
+    <script src="https://file.ljcdn.com/nebula/tailwindcss_3.4.16_1750069526172.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://file.ljcdn.com/nebula/font-awesome-6.4.0-all.min_1749456930282.css">
+    <style>
+        body { font-family: 'Noto Sans SC', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #2d1b69 100%); }
+        .gradient-text { background: linear-gradient(135deg, #ff6b9d, #a855f7, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.05); }
+        
+        .nav-link {
+            text-decoration: none;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link i {
+            opacity: 0.8;
+        }
+
+        .nav-link:hover i {
+            opacity: 1;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 8px 16px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border-left: 2px solid transparent;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: rgba(168, 85, 247, 0.5);
+        }
+
+        .sidebar-link.active {
+            background: rgba(168, 85, 247, 0.2);
+            color: white;
+            border-left-color: #a855f7;
+        }
+
+        .content-section {
+            margin-bottom: 3rem;
+        }
+
+        .content-section h2 {
+            color: #a855f7;
+            margin-bottom: 1rem;
+        }
+
+        .content-section h3 {
+            color: #ff6b9d;
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff6b9d, #a855f7);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body class="gradient-bg text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-12">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-code text-2xl gradient-text"></i>
+                    <span class="text-xl font-bold">CodeLink</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.html#features" class="nav-link px-4 py-2 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-rocket mr-2"></i>功能
+                    </a>
+                    <a href="pricing.html" class="nav-link px-4 py-2 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-tag mr-2"></i>价格
+                    </a>
+                    <a href="docs.html" class="nav-link px-4 py-2 text-white bg-white/10 transition-colors">
+                        <i class="fas fa-file-alt mr-2"></i>文档
+                    </a>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="loginBtn" class="px-6 py-2 bg-gradient-to-r from-pink-400/70 via-purple-400/70 to-blue-400/70 rounded-lg font-medium hover:scale-105 transition-transform">
+                    登录
+                </button>
+                <button id="mobileMenuBtn" class="md:hidden p-2 text-white/80 hover:text-white transition-colors">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden glass-effect border-t border-white/10 hidden">
+            <div class="max-w-7xl mx-auto px-6 py-4">
+                <nav class="flex flex-col space-y-4">
+                    <a href="index.html#features" class="nav-link mobile-nav-link px-4 py-2 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-rocket mr-2"></i>功能
+                    </a>
+                    <a href="pricing.html" class="nav-link mobile-nav-link px-4 py-2 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-tag mr-2"></i>价格
+                    </a>
+                    <a href="docs.html" class="nav-link mobile-nav-link px-4 py-2 text-white bg-white/10 transition-colors">
+                        <i class="fas fa-file-alt mr-2"></i>文档
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center py-16">
+                <h1 class="text-6xl md:text-7xl font-bold mb-6 leading-tight">
+                    <span class="gradient-text">使用手册</span>
+                </h1>
+                <p class="text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
+                    详细的安装、配置和使用指南，帮助您快速上手 CodeLink
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-4 gap-8">
+                <!-- Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="sidebar glass-effect rounded-2xl p-6 border border-white/10">
+                        <h3 class="text-lg font-bold mb-4">目录</h3>
+                        <nav class="space-y-2">
+                            <a href="#installation" class="sidebar-link active">
+                                <i class="fas fa-download mr-2"></i>安装
+                            </a>
+                            <a href="#configuration" class="sidebar-link">
+                                <i class="fas fa-cog mr-2"></i>配置
+                            </a>
+                            <a href="#features" class="sidebar-link">
+                                <i class="fas fa-rocket mr-2"></i>功能介绍
+                            </a>
+                            <a href="#copilot" class="sidebar-link pl-6">
+                                <i class="fas fa-lightbulb mr-2"></i>Copilot模式
+                            </a>
+                            <a href="#agent" class="sidebar-link pl-6">
+                                <i class="fas fa-robot mr-2"></i>Agent模式
+                            </a>
+                            <a href="#remote" class="sidebar-link pl-6">
+                                <i class="fas fa-cloud mr-2"></i>Remote模式
+                            </a>
+                            <a href="#shortcuts" class="sidebar-link">
+                                <i class="fas fa-keyboard mr-2"></i>快捷键
+                            </a>
+                            <a href="#troubleshooting" class="sidebar-link">
+                                <i class="fas fa-question-circle mr-2"></i>常见问题
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="lg:col-span-3">
+                    <div class="glass-effect rounded-2xl p-8 border border-white/10">
+                        
+                        <!-- 安装 -->
+                        <section id="installation" class="content-section">
+                            <h2 class="text-3xl font-bold mb-6">📦 安装</h2>
+                            
+                            <h3 class="text-xl font-semibold mb-4">VS Code 插件安装</h3>
+                            <div class="space-y-4 mb-6">
+                                <div class="flex items-start">
+                                    <span class="step-number">1</span>
+                                    <p class="text-gray-300">打开 VS Code，点击左侧的扩展图标或按 <code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Shift+X</code></p>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="step-number">2</span>
+                                    <p class="text-gray-300">在搜索框中输入 "CodeLink"</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="step-number">3</span>
+                                    <p class="text-gray-300">找到 CodeLink 插件，点击 "安装"</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="step-number">4</span>
+                                    <p class="text-gray-300">安装完成后重启 VS Code</p>
+                                </div>
+                            </div>
+
+                            <h3 class="text-xl font-semibold mb-4">JetBrains IDEs 插件安装</h3>
+                            <div class="space-y-4 mb-6">
+                                <div class="flex items-start">
+                                    <span class="step-number">1</span>
+                                    <p class="text-gray-300">打开 IntelliJ IDEA / PyCharm 等 JetBrains IDE</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="step-number">2</span>
+                                    <p class="text-gray-300">前往 File → Settings → Plugins</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="step-number">3</span>
+                                    <p class="text-gray-300">搜索 "CodeLink"，点击安装</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="step-number">4</span>
+                                    <p class="text-gray-300">重启 IDE 完成安装</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 配置 -->
+                        <section id="configuration" class="content-section">
+                            <h2 class="text-3xl font-bold mb-6">⚙️ 配置</h2>
+                            
+                            <h3 class="text-xl font-semibold mb-4">API 密钥配置</h3>
+                            <p class="text-gray-300 mb-4">首次使用需要配置 API 密钥：</p>
+                            <div class="code-block">
+                                <pre><code># 打开设置面板
+Ctrl+Shift+P (Windows/Linux) 或 Cmd+Shift+P (Mac)
+
+# 输入 "CodeLink: Configure API Key"
+# 粘贴您的 API 密钥并保存</code></pre>
+                            </div>
+
+                            <h3 class="text-xl font-semibold mb-4">代理设置</h3>
+                            <p class="text-gray-300 mb-4">如果您在企业网络环境中，可能需要配置代理：</p>
+                            <div class="code-block">
+                                <pre><code>{
+  "codelink.proxy": {
+    "host": "proxy.company.com",
+    "port": 8080,
+    "auth": {
+      "username": "your-username",
+      "password": "your-password"
+    }
+  }
+}</code></pre>
+                            </div>
+                        </section>
+
+                        <!-- 功能介绍 -->
+                        <section id="features" class="content-section">
+                            <h2 class="text-3xl font-bold mb-6">🚀 功能介绍</h2>
+                            <p class="text-gray-300 mb-6">CodeLink 提供三种主要工作模式，每种模式都有其独特的优势和适用场景。</p>
+                        </section>
+
+                        <!-- Copilot模式 -->
+                        <section id="copilot" class="content-section">
+                            <h2 class="text-3xl font-bold mb-6">💡 Copilot模式</h2>
+                            
+                            <h3 class="text-xl font-semibold mb-4">智能代码补全</h3>
+                            <p class="text-gray-300 mb-4">开始输入代码，CodeLink 会自动提供智能补全建议：</p>
+                            <div class="code-block">
+                                <pre><code>// 输入函数名，按 Tab 接受建议
+function calculateTax(income) {
+    // CodeLink 会自动补全函数体
+    if (income <= 10000) {
+        return income * 0.1;
+    } else if (income <= 50000) {
+        return 1000 + (income - 10000) * 0.2;
+    } else {
+        return 9000 + (income - 50000) * 0.3;
+    }
+}</code></pre>
+                            </div>
+
+                            <h3 class="text-xl font-semibold mb-4">实时Chat问答</h3>
+                            <p class="text-gray-300 mb-4">按 <code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Shift+L</code> 打开聊天面板，随时询问编程问题。</p>
+                        </section>
+
+                        <!-- Agent模式 -->
+                        <section id="agent" class="content-section">
+                            <h2 class="text-3xl font-bold mb-6">🤖 Agent模式</h2>
+                            
+                            <h3 class="text-xl font-semibold mb-4">自然语言编程</h3>
+                            <p class="text-gray-300 mb-4">使用自然语言描述您的需求，Agent 会自动生成代码：</p>
+                            <div class="code-block">
+                                <pre><code>// 在注释中描述需求
+// 请创建一个用户登录的 React 组件，包含用户名和密码输入框
+
+// Agent 会自动生成以下代码：
+import React, { useState } from 'react';
+
+const LoginComponent = () => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // 处理登录逻辑
+        console.log('Login attempt:', { username, password });
+    };
+    
+    return (
+        &lt;form onSubmit={handleSubmit}&gt;
+            &lt;input 
+                type="text" 
+                placeholder="用户名"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+            /&gt;
+            &lt;input 
+                type="password" 
+                placeholder="密码"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            /&gt;
+            &lt;button type="submit"&gt;登录&lt;/button&gt;
+        &lt;/form&gt;
+    );
+};
+
+export default LoginComponent;</code></pre>
+                            </div>
+
+                            <h3 class="text-xl font-semibold mb-4">项目级别重构</h3>
+                            <p class="text-gray-300 mb-4">Agent 可以理解整个项目结构，进行跨文件的代码重构和优化。</p>
+                        </section>
+
+                        <!-- Remote模式 -->
+                        <section id="remote" class="content-section">
+                            <h2 class="text-3xl font-bold mb-6">☁️ Remote模式</h2>
+                            
+                            <h3 class="text-xl font-semibold mb-4">多任务并行</h3>
+                            <p class="text-gray-300 mb-4">同时处理多个编程任务，提高开发效率：</p>
+                            <div class="code-block">
+                                <pre><code># 启动多个并行任务
+codelink remote start
+
+# 查看任务状态
+codelink remote status
+
+# 任务1: 生成API文档
+Task 1: ✅ API documentation generated
+
+# 任务2: 代码重构
+Task 2: 🔄 Refactoring in progress...
+
+# 任务3: 单元测试生成
+Task 3: ⏳ Waiting in queue</code></pre>
+                            </div>
+
+                            <h3 class="text-xl font-semibold mb-4">云端同步</h3>
+                            <p class="text-gray-300 mb-4">您的代码和设置会自动同步到云端，支持跨设备开发。</p>
+                        </section>
+
+                        <!-- 快捷键 -->
+                        <section id="shortcuts" class="content-section">
+                            <h2 class="text-3xl font-bold mb-6">⌨️ 快捷键</h2>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="glass-effect rounded-xl p-4 border border-white/10">
+                                    <h4 class="font-bold text-purple-300 mb-3">通用快捷键</h4>
+                                    <ul class="space-y-2 text-sm">
+                                        <li><code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Shift+L</code> 打开聊天面板</li>
+                                        <li><code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Shift+A</code> 启动 Agent 模式</li>
+                                        <li><code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Shift+R</code> 启动 Remote 模式</li>
+                                        <li><code class="bg-gray-800 px-2 py-1 rounded">Tab</code> 接受代码建议</li>
+                                    </ul>
+                                </div>
+                                <div class="glass-effect rounded-xl p-4 border border-white/10">
+                                    <h4 class="font-bold text-pink-300 mb-3">Copilot 模式</h4>
+                                    <ul class="space-y-2 text-sm">
+                                        <li><code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Space</code> 触发补全</li>
+                                        <li><code class="bg-gray-800 px-2 py-1 rounded">Esc</code> 取消建议</li>
+                                        <li><code class="bg-gray-800 px-2 py-1 rounded">Alt+→</code> 部分接受</li>
+                                        <li><code class="bg-gray-800 px-2 py-1 rounded">Alt+[</code> 上一个建议</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 常见问题 -->
+                        <section id="troubleshooting" class="content-section">
+                            <h2 class="text-3xl font-bold mb-6">❓ 常见问题</h2>
+                            
+                            <div class="space-y-6">
+                                <div class="glass-effect rounded-xl p-6 border border-white/10">
+                                    <h4 class="font-bold text-purple-300 mb-3">Q: 插件无法启动怎么办？</h4>
+                                    <p class="text-gray-300">A: 请检查是否正确配置了 API 密钥，并确保网络连接正常。如果问题持续，请重启 IDE 并检查插件是否为最新版本。</p>
+                                </div>
+                                <div class="glass-effect rounded-xl p-6 border border-white/10">
+                                    <h4 class="font-bold text-pink-300 mb-3">Q: 代码建议不准确怎么办？</h4>
+                                    <p class="text-gray-300">A: 建议提供更多的上下文信息，包括注释和变量名。您也可以通过聊天面板直接询问具体问题。</p>
+                                </div>
+                                <div class="glass-effect rounded-xl p-6 border border-white/10">
+                                    <h4 class="font-bold text-blue-300 mb-3">Q: 如何提高 Agent 模式的效果？</h4>
+                                    <p class="text-gray-300">A: 尽量使用清晰、具体的自然语言描述，包含具体的需求和约束条件。避免模糊的表述。</p>
+                                </div>
+                                <div class="glass-effect rounded-xl p-6 border border-white/10">
+                                    <h4 class="font-bold text-cyan-300 mb-3">Q: Remote 模式的任务队列满了怎么办？</h4>
+                                    <p class="text-gray-300">A: 可以升级到专业版获得更大的任务队列容量，或者等待当前任务完成后再提交新任务。</p>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-16 px-6 border-t border-white/10 mt-20">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="flex items-center justify-center space-x-2 mb-4">
+                <i class="fas fa-code text-xl gradient-text"></i>
+                <span class="text-lg font-bold">CodeLink</span>
+            </div>
+            <p class="text-gray-400 text-sm">
+                © 2024 CodeLink AI. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+        // 导航菜单功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 移动端菜单功能
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    const icon = this.querySelector('i');
+                    if (mobileMenu.classList.contains('hidden')) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    } else {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    }
+                });
+
+                // 点击移动端菜单链接后关闭菜单
+                mobileNavLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.add('hidden');
+                        const icon = mobileMenuBtn.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    });
+                });
+            }
+
+            // 侧边栏导航功能
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const sections = document.querySelectorAll('.content-section');
+
+            // 点击侧边栏链接时的处理
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 移除所有活动状态
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // 添加当前活动状态
+                    this.classList.add('active');
+                    
+                    // 滚动到对应section
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // 监听滚动事件，高亮当前section
+            window.addEventListener('scroll', function() {
+                let current = '';
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= 100 && rect.bottom >= 100) {
+                        current = section.id;
+                    }
+                });
+
+                if (current) {
+                    sidebarLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${current}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

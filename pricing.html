@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>价格方案 - CodeLink</title>
+    <script src="https://file.ljcdn.com/nebula/tailwindcss_3.4.16_1750069526172.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://file.ljcdn.com/nebula/font-awesome-6.4.0-all.min_1749456930282.css">
+    <style>
+        body { font-family: 'Noto Sans SC', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #2d1b69 100%); }
+        .gradient-text { background: linear-gradient(135deg, #ff6b9d, #a855f7, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .gradient-border { background: linear-gradient(135deg, #ff6b9d, #a855f7, #3b82f6); padding: 1px; border-radius: 16px; }
+        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.05); }
+        
+        .nav-link {
+            text-decoration: none;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link i {
+            opacity: 0.8;
+        }
+
+        .nav-link:hover i {
+            opacity: 1;
+        }
+
+        .price-card {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .price-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(168, 85, 247, 0.2);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: linear-gradient(135deg, #ff6b9d, #a855f7);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="gradient-bg text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-12">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-code text-2xl gradient-text"></i>
+                    <span class="text-xl font-bold">CodeLink</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.html#features" class="nav-link px-4 py-2 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-rocket mr-2"></i>功能
+                    </a>
+                    <a href="pricing.html" class="nav-link px-4 py-2 text-white bg-white/10 transition-colors">
+                        <i class="fas fa-tag mr-2"></i>价格
+                    </a>
+                    <a href="docs.html" class="nav-link px-4 py-2 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-file-alt mr-2"></i>文档
+                    </a>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="loginBtn" class="px-6 py-2 bg-gradient-to-r from-pink-400/70 via-purple-400/70 to-blue-400/70 rounded-lg font-medium hover:scale-105 transition-transform">
+                    登录
+                </button>
+                <button id="mobileMenuBtn" class="md:hidden p-2 text-white/80 hover:text-white transition-colors">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden glass-effect border-t border-white/10 hidden">
+            <div class="max-w-7xl mx-auto px-6 py-4">
+                <nav class="flex flex-col space-y-4">
+                    <a href="index.html#features" class="nav-link mobile-nav-link px-4 py-2 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-rocket mr-2"></i>功能
+                    </a>
+                    <a href="pricing.html" class="nav-link mobile-nav-link px-4 py-2 text-white bg-white/10 transition-colors">
+                        <i class="fas fa-tag mr-2"></i>价格
+                    </a>
+                    <a href="docs.html" class="nav-link mobile-nav-link px-4 py-2 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-file-alt mr-2"></i>文档
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-8 px-6">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-6xl md:text-7xl font-bold mb-6 leading-tight">
+                <span class="gradient-text">定价方案</span>
+            </h1>
+            <p class="text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
+                选择适合您的方案，开始您的AI编程之旅
+            </p>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="py-4 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- 免费版 -->
+                <div class="price-card glass-effect rounded-2xl p-8 border border-white/10">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold mb-2">免费版</h3>
+                        <div class="text-5xl font-bold mb-4">$0<span class="text-lg text-gray-400">/月</span></div>
+                        <p class="text-gray-400">适合个人开发者体验</p>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>10次AI会话/月</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>基础代码补全</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>社区支持</li>
+                        <li class="flex items-center"><i class="fas fa-times text-gray-500 mr-3"></i>Agent编程</li>
+                        <li class="flex items-center"><i class="fas fa-times text-gray-500 mr-3"></i>异步模式</li>
+                        <li class="flex items-center"><i class="fas fa-times text-gray-500 mr-3"></i>优先技术支持</li>
+                    </ul>
+                    <button class="w-full py-3 border border-white/30 rounded-xl hover:bg-white/10 transition-all">
+                        立即开始
+                    </button>
+                </div>
+
+                <!-- 专业版 -->
+                <div class="price-card relative">
+                    <div class="popular-badge">热门</div>
+                    <div class="gradient-border h-full">
+                        <div class="glass-effect rounded-2xl p-8 h-full">
+                            <div class="text-center mb-8">
+                                <h3 class="text-2xl font-bold mb-2">专业版</h3>
+                                <div class="text-5xl font-bold mb-4">$20<span class="text-lg text-gray-400">/月</span></div>
+                                <p class="text-gray-400">适合专业开发团队</p>
+                            </div>
+                            <ul class="space-y-4 mb-8">
+                                <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>500次AI会话/月</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>全功能代码补全</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Agent自动编程</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>异步开发模式</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>优先技术支持</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>团队协作功能</li>
+                            </ul>
+                            <button class="w-full py-3 bg-gradient-to-r from-pink-400/70 via-purple-400/70 to-blue-400/70 rounded-xl font-medium hover:scale-105 transition-transform">
+                                升级专业版
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 企业版 -->
+                <div class="price-card glass-effect rounded-2xl p-8 border border-white/10">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold mb-2">企业版</h3>
+                        <div class="text-5xl font-bold mb-4">$99<span class="text-lg text-gray-400">/月</span></div>
+                        <p class="text-gray-400">适合大型企业团队</p>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>无限AI会话</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>全功能代码补全</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Agent自动编程</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>异步开发模式</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>24/7专属客服</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>私有部署支持</li>
+                    </ul>
+                    <button class="w-full py-3 border border-white/30 rounded-xl hover:bg-white/10 transition-all">
+                        联系销售
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">常见问题</h2>
+                <p class="text-xl text-gray-400">关于定价和功能的常见问题解答</p>
+            </div>
+            <div class="space-y-6">
+                <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                    <h3 class="text-xl font-bold mb-4">可以随时升级或降级吗？</h3>
+                    <p class="text-gray-300">是的，您可以随时升级或降级您的方案。升级立即生效，降级将在当前账单周期结束后生效。</p>
+                </div>
+                <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                    <h3 class="text-xl font-bold mb-4">支持哪些支付方式？</h3>
+                    <p class="text-gray-300">我们支持信用卡、PayPal、支付宝、微信支付等多种支付方式。</p>
+                </div>
+                <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                    <h3 class="text-xl font-bold mb-4">有免费试用期吗？</h3>
+                    <p class="text-gray-300">专业版和企业版都提供14天免费试用期，无需信用卡即可开始试用。</p>
+                </div>
+                <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                    <h3 class="text-xl font-bold mb-4">如何取消订阅？</h3>
+                    <p class="text-gray-300">您可以在账户设置中随时取消订阅，取消后将在当前账单周期结束时生效。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-16 px-6 border-t border-white/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <i class="fas fa-code text-xl gradient-text"></i>
+                    <span class="text-lg font-bold">CodeLink</span>
+                </div>
+                <div class="text-gray-400 text-sm mb-4 md:mb-0">
+                    © 2024 CodeLink AI. All rights reserved.
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-github"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 导航菜单功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 移动端菜单功能
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+                const icon = this.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                }
+            });
+
+            // 点击移动端菜单链接后关闭菜单
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.add('hidden');
+                    const icon = mobileMenuBtn.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

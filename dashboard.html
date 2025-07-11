@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - CodeLink</title>
+    <script src="https://file.ljcdn.com/nebula/tailwindcss_3.4.16_1750069526172.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://file.ljcdn.com/nebula/font-awesome-6.4.0-all.min_1749456930282.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Noto Sans SC', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #2d1b69 100%); }
+        .gradient-text { background: linear-gradient(135deg, #ff6b9d, #a855f7, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.05); }
+        
+        .nav-link {
+            text-decoration: none;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: rgba(168, 85, 247, 0.5);
+        }
+
+        .sidebar-link.active {
+            background: rgba(168, 85, 247, 0.2);
+            color: white;
+            border-left-color: #a855f7;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.2);
+        }
+
+        .plan-badge {
+            background: linear-gradient(135deg, #ff6b9d, #a855f7);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #ff6b9d, #a855f7);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="gradient-bg text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-12">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-code text-2xl gradient-text"></i>
+                    <span class="text-xl font-bold">CodeLink</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.html#features" class="nav-link px-4 py-2 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-rocket mr-2"></i>功能
+                    </a>
+                    <a href="pricing.html" class="nav-link px-4 py-2 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-tag mr-2"></i>价格
+                    </a>
+                    <a href="docs.html" class="nav-link px-4 py-2 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-file-alt mr-2"></i>文档
+                    </a>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2">
+                    <img id="userAvatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face" class="w-8 h-8 rounded-full">
+                    <span id="userName" class="text-sm font-medium">用户</span>
+                </div>
+                <button id="logoutBtn" class="px-4 py-2 text-white/80 hover:text-white transition-colors">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-4 gap-8">
+                <!-- Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="sidebar glass-effect rounded-2xl p-6 border border-white/10">
+                        <h3 class="text-lg font-bold mb-6">个人中心</h3>
+                        <nav class="space-y-2">
+                            <a href="#overview" class="sidebar-link active" data-tab="overview">
+                                <i class="fas fa-tachometer-alt mr-3"></i>数据概览
+                            </a>
+                            <a href="#plan" class="sidebar-link" data-tab="plan">
+                                <i class="fas fa-crown mr-3"></i>我的套餐
+                            </a>
+                            <a href="#usage" class="sidebar-link" data-tab="usage">
+                                <i class="fas fa-chart-line mr-3"></i>使用统计
+                            </a>
+                            <a href="#settings" class="sidebar-link" data-tab="settings">
+                                <i class="fas fa-cog mr-3"></i>设置
+                            </a>
+                            <a href="#help" class="sidebar-link" data-tab="help">
+                                <i class="fas fa-question-circle mr-3"></i>帮助文档
+                            </a>
+                            <a href="#contact" class="sidebar-link" data-tab="contact">
+                                <i class="fas fa-envelope mr-3"></i>联系我们
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="lg:col-span-3">
+                    <!-- 数据概览 -->
+                    <div id="tab-overview" class="tab-content">
+                        <div class="mb-8">
+                            <h1 class="text-3xl font-bold mb-2">数据概览</h1>
+                            <p class="text-gray-400">查看您的CodeLink使用情况和统计信息</p>
+                        </div>
+
+                        <!-- 统计卡片 -->
+                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                            <div class="stat-card">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-comments text-2xl text-blue-400 mr-3"></i>
+                                        <h3 class="font-semibold">AI会话</h3>
+                                    </div>
+                                    <span class="text-2xl font-bold" id="conversationCount">0</span>
+                                </div>
+                                <div class="progress-bar mb-2">
+                                    <div class="progress-fill" id="conversationProgress" style="width: 0%"></div>
+                                </div>
+                                <p class="text-sm text-gray-400">本月已使用 <span id="conversationUsed">0</span> / <span id="conversationTotal">10</span> 次</p>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-code text-2xl text-purple-400 mr-3"></i>
+                                        <h3 class="font-semibold">代码生成</h3>
+                                    </div>
+                                    <span class="text-2xl font-bold" id="codeLines">0</span>
+                                </div>
+                                <p class="text-sm text-gray-400">累计生成 <span id="totalCodeLines">0</span> 行代码</p>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-clock text-2xl text-pink-400 mr-3"></i>
+                                        <h3 class="font-semibold">节省时间</h3>
+                                    </div>
+                                    <span class="text-2xl font-bold" id="timeSaved">0</span>
+                                </div>
+                                <p class="text-sm text-gray-400">本月节省 <span id="totalTimeSaved">0</span> 小时</p>
+                            </div>
+                        </div>
+
+                        <!-- 趋势图 -->
+                        <div class="glass-effect rounded-2xl p-6 border border-white/10 mb-8">
+                            <h3 class="text-xl font-bold mb-4">使用趋势</h3>
+                            <canvas id="usageChart" width="400" height="200"></canvas>
+                        </div>
+
+                        <!-- 最近活动 -->
+                        <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                            <h3 class="text-xl font-bold mb-4">最近活动</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4 p-4 bg-white/5 rounded-xl">
+                                    <i class="fas fa-lightbulb text-yellow-400"></i>
+                                    <div>
+                                        <p class="font-medium">使用Copilot模式生成React组件</p>
+                                        <p class="text-sm text-gray-400">2小时前</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4 p-4 bg-white/5 rounded-xl">
+                                    <i class="fas fa-robot text-purple-400"></i>
+                                    <div>
+                                        <p class="font-medium">Agent模式完成API接口开发</p>
+                                        <p class="text-sm text-gray-400">5小时前</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4 p-4 bg-white/5 rounded-xl">
+                                    <i class="fas fa-cloud text-blue-400"></i>
+                                    <div>
+                                        <p class="font-medium">Remote模式处理多个任务</p>
+                                        <p class="text-sm text-gray-400">1天前</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 我的套餐 -->
+                    <div id="tab-plan" class="tab-content hidden">
+                        <div class="mb-8">
+                            <h1 class="text-3xl font-bold mb-2">我的套餐</h1>
+                            <p class="text-gray-400">管理您的订阅计划和账单信息</p>
+                        </div>
+
+                        <!-- 当前套餐 -->
+                        <div class="glass-effect rounded-2xl p-8 border border-white/10 mb-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <h2 class="text-2xl font-bold">当前套餐</h2>
+                                        <span class="plan-badge" id="currentPlan">免费版</span>
+                                    </div>
+                                    <p class="text-gray-400">享受CodeLink的基础功能</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-3xl font-bold">$0</div>
+                                    <div class="text-gray-400">/ 月</div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <h4 class="font-semibold mb-3">套餐包含</h4>
+                                    <ul class="space-y-2 text-sm">
+                                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>10次AI会话/月</li>
+                                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>基础代码补全</li>
+                                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>社区支持</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold mb-3">账单周期</h4>
+                                    <p class="text-sm text-gray-400 mb-2">下次续费时间：永不到期</p>
+                                    <p class="text-sm text-gray-400">自动续费：已关闭</p>
+                                </div>
+                            </div>
+                            
+                            <button class="px-6 py-3 bg-gradient-to-r from-pink-400/70 via-purple-400/70 to-blue-400/70 rounded-lg font-medium hover:scale-105 transition-transform">
+                                升级套餐
+                            </button>
+                        </div>
+
+                        <!-- 套餐对比 -->
+                        <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                            <h3 class="text-xl font-bold mb-6">升级选项</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="border border-white/10 rounded-xl p-6">
+                                    <h4 class="text-lg font-bold mb-2">专业版</h4>
+                                    <div class="text-2xl font-bold mb-4">$20<span class="text-sm text-gray-400">/月</span></div>
+                                    <ul class="space-y-2 text-sm mb-6">
+                                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>500次AI会话/月</li>
+                                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Agent自动编程</li>
+                                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>异步开发模式</li>
+                                    </ul>
+                                    <button class="w-full py-2 border border-white/30 rounded-lg hover:bg-white/10 transition-all">
+                                        选择专业版
+                                    </button>
+                                </div>
+                                <div class="border border-white/10 rounded-xl p-6">
+                                    <h4 class="text-lg font-bold mb-2">企业版</h4>
+                                    <div class="text-2xl font-bold mb-4">$99<span class="text-sm text-gray-400">/月</span></div>
+                                    <ul class="space-y-2 text-sm mb-6">
+                                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>无限AI会话</li>
+                                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>24/7专属客服</li>
+                                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>私有部署支持</li>
+                                    </ul>
+                                    <button class="w-full py-2 border border-white/30 rounded-lg hover:bg-white/10 transition-all">
+                                        联系销售
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 使用统计 -->
+                    <div id="tab-usage" class="tab-content hidden">
+                        <div class="mb-8">
+                            <h1 class="text-3xl font-bold mb-2">使用统计</h1>
+                            <p class="text-gray-400">详细的使用数据和性能分析</p>
+                        </div>
+
+                        <!-- 详细统计 -->
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                                <h3 class="text-lg font-bold mb-4">月度使用情况</h3>
+                                <canvas id="monthlyChart" width="300" height="200"></canvas>
+                            </div>
+                            <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                                <h3 class="text-lg font-bold mb-4">功能使用分布</h3>
+                                <canvas id="featureChart" width="300" height="200"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 性能指标 -->
+                        <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                            <h3 class="text-lg font-bold mb-4">性能指标</h3>
+                            <div class="grid md:grid-cols-4 gap-4">
+                                <div class="text-center p-4 bg-white/5 rounded-xl">
+                                    <div class="text-2xl font-bold text-blue-400 mb-1">95%</div>
+                                    <div class="text-sm text-gray-400">代码准确率</div>
+                                </div>
+                                <div class="text-center p-4 bg-white/5 rounded-xl">
+                                    <div class="text-2xl font-bold text-green-400 mb-1">2.3s</div>
+                                    <div class="text-sm text-gray-400">平均响应时间</div>
+                                </div>
+                                <div class="text-center p-4 bg-white/5 rounded-xl">
+                                    <div class="text-2xl font-bold text-purple-400 mb-1">87%</div>
+                                    <div class="text-sm text-gray-400">代码采用率</div>
+                                </div>
+                                <div class="text-center p-4 bg-white/5 rounded-xl">
+                                    <div class="text-2xl font-bold text-pink-400 mb-1">45h</div>
+                                    <div class="text-sm text-gray-400">累计节省时间</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 设置 -->
+                    <div id="tab-settings" class="tab-content hidden">
+                        <div class="mb-8">
+                            <h1 class="text-3xl font-bold mb-2">设置</h1>
+                            <p class="text-gray-400">管理您的账户和偏好设置</p>
+                        </div>
+
+                        <!-- 账户设置 -->
+                        <div class="glass-effect rounded-2xl p-6 border border-white/10 mb-6">
+                            <h3 class="text-lg font-bold mb-4">账户信息</h3>
+                            <div class="space-y-4">
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300 mb-1">用户名</label>
+                                        <input type="text" id="settingsUsername" class="w-full px-4 py-3 bg-gray-800 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="输入用户名">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300 mb-1">邮箱地址</label>
+                                        <input type="email" id="settingsEmail" class="w-full px-4 py-3 bg-gray-800 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="输入邮箱">
+                                    </div>
+                                </div>
+                                <button class="px-6 py-2 bg-gradient-to-r from-pink-400/70 via-purple-400/70 to-blue-400/70 rounded-lg font-medium hover:scale-105 transition-transform">
+                                    保存更改
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 偏好设置 -->
+                        <div class="glass-effect rounded-2xl p-6 border border-white/10 mb-6">
+                            <h3 class="text-lg font-bold mb-4">偏好设置</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-medium">自动补全</h4>
+                                        <p class="text-sm text-gray-400">启用智能代码补全功能</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-medium">邮件通知</h4>
+                                        <p class="text-sm text-gray-400">接收产品更新和重要通知</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 安全设置 -->
+                        <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                            <h3 class="text-lg font-bold mb-4">安全设置</h3>
+                            <div class="space-y-4">
+                                <button class="w-full text-left p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                    <i class="fas fa-key mr-3 text-yellow-400"></i>修改密码
+                                </button>
+                                <button class="w-full text-left p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                    <i class="fas fa-shield-alt mr-3 text-green-400"></i>双重验证
+                                </button>
+                                <button class="w-full text-left p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors text-red-400">
+                                    <i class="fas fa-trash mr-3"></i>删除账户
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 帮助文档 -->
+                    <div id="tab-help" class="tab-content hidden">
+                        <div class="mb-8">
+                            <h1 class="text-3xl font-bold mb-2">
+                                CodeLink <span class="gradient-text">使用手册</span>
+                            </h1>
+                            <p class="text-gray-400">详细的安装、配置和使用指南，帮助您快速上手 CodeLink</p>
+                        </div>
+
+                        <div class="glass-effect rounded-2xl p-8 border border-white/10 max-h-[600px] overflow-y-auto">
+                                    
+                                    <!-- 安装 -->
+                                    <section id="doc-installation" class="doc-content-section">
+                                        <h2 class="text-3xl font-bold mb-6">📦 安装</h2>
+                                        
+                                        <h3 class="text-xl font-semibold mb-4">VS Code 插件安装</h3>
+                                        <div class="space-y-4 mb-6">
+                                            <div class="flex items-start">
+                                                <span class="inline-block w-6 h-6 bg-purple-500 text-white rounded-full text-sm font-bold text-center leading-6 mr-3 mt-1">1</span>
+                                                <p class="text-gray-300">打开 VS Code，点击左侧的扩展图标或按 <code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Shift+X</code></p>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <span class="inline-block w-6 h-6 bg-purple-500 text-white rounded-full text-sm font-bold text-center leading-6 mr-3 mt-1">2</span>
+                                                <p class="text-gray-300">在搜索框中输入 "CodeLink"</p>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <span class="inline-block w-6 h-6 bg-purple-500 text-white rounded-full text-sm font-bold text-center leading-6 mr-3 mt-1">3</span>
+                                                <p class="text-gray-300">找到 CodeLink 插件，点击 "安装"</p>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <span class="inline-block w-6 h-6 bg-purple-500 text-white rounded-full text-sm font-bold text-center leading-6 mr-3 mt-1">4</span>
+                                                <p class="text-gray-300">安装完成后重启 VS Code</p>
+                                            </div>
+                                        </div>
+
+                                        <h3 class="text-xl font-semibold mb-4">JetBrains IDEs 插件安装</h3>
+                                        <div class="space-y-4 mb-6">
+                                            <div class="flex items-start">
+                                                <span class="inline-block w-6 h-6 bg-pink-500 text-white rounded-full text-sm font-bold text-center leading-6 mr-3 mt-1">1</span>
+                                                <p class="text-gray-300">打开 IntelliJ IDEA / PyCharm 等 JetBrains IDE</p>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <span class="inline-block w-6 h-6 bg-pink-500 text-white rounded-full text-sm font-bold text-center leading-6 mr-3 mt-1">2</span>
+                                                <p class="text-gray-300">前往 File → Settings → Plugins</p>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <span class="inline-block w-6 h-6 bg-pink-500 text-white rounded-full text-sm font-bold text-center leading-6 mr-3 mt-1">3</span>
+                                                <p class="text-gray-300">搜索 "CodeLink"，点击安装</p>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <span class="inline-block w-6 h-6 bg-pink-500 text-white rounded-full text-sm font-bold text-center leading-6 mr-3 mt-1">4</span>
+                                                <p class="text-gray-300">重启 IDE 完成安装</p>
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    <!-- 配置 -->
+                                    <section id="doc-configuration" class="doc-content-section">
+                                        <h2 class="text-3xl font-bold mb-6">⚙️ 配置</h2>
+                                        
+                                        <h3 class="text-xl font-semibold mb-4">API 密钥配置</h3>
+                                        <p class="text-gray-300 mb-4">首次使用需要配置 API 密钥：</p>
+                                        <div class="bg-gray-800 rounded-lg p-4 mb-6">
+                                            <pre class="text-green-400"><code># 打开设置面板
+Ctrl+Shift+P (Windows/Linux) 或 Cmd+Shift+P (Mac)
+
+# 输入 "CodeLink: Configure API Key"
+# 粘贴您的 API 密钥并保存</code></pre>
+                                        </div>
+
+                                        <h3 class="text-xl font-semibold mb-4">代理设置</h3>
+                                        <p class="text-gray-300 mb-4">如果您在企业网络环境中，可能需要配置代理：</p>
+                                        <div class="bg-gray-800 rounded-lg p-4 mb-6">
+                                            <pre class="text-blue-400"><code>{
+  "codelink.proxy": {
+    "host": "proxy.company.com",
+    "port": 8080,
+    "auth": {
+      "username": "your-username",
+      "password": "your-password"
+    }
+  }
+}</code></pre>
+                                        </div>
+                                    </section>
+
+                                    <!-- 功能介绍 -->
+                                    <section id="doc-features" class="doc-content-section">
+                                        <h2 class="text-3xl font-bold mb-6">🚀 功能介绍</h2>
+                                        <p class="text-gray-300 mb-6">CodeLink 提供三种主要工作模式，每种模式都有其独特的优势和适用场景。</p>
+                                    </section>
+
+                                    <!-- Copilot模式 -->
+                                    <section id="doc-copilot" class="doc-content-section">
+                                        <h2 class="text-3xl font-bold mb-6">💡 Copilot模式</h2>
+                                        
+                                        <h3 class="text-xl font-semibold mb-4">智能代码补全</h3>
+                                        <p class="text-gray-300 mb-4">开始输入代码，CodeLink 会自动提供智能补全建议：</p>
+                                        <div class="bg-gray-800 rounded-lg p-4 mb-6">
+                                            <pre class="text-yellow-400"><code>// 输入函数名，按 Tab 接受建议
+function calculateTax(income) {
+    // CodeLink 会自动补全函数体
+    if (income <= 10000) {
+        return income * 0.1;
+    } else if (income <= 50000) {
+        return 1000 + (income - 10000) * 0.2;
+    } else {
+        return 9000 + (income - 50000) * 0.3;
+    }
+}</code></pre>
+                                        </div>
+
+                                        <h3 class="text-xl font-semibold mb-4">实时Chat问答</h3>
+                                        <p class="text-gray-300 mb-4">按 <code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Shift+L</code> 打开聊天面板，随时询问编程问题。</p>
+                                    </section>
+
+                                    <!-- Agent模式 -->
+                                    <section id="doc-agent" class="doc-content-section">
+                                        <h2 class="text-3xl font-bold mb-6">🤖 Agent模式</h2>
+                                        
+                                        <h3 class="text-xl font-semibold mb-4">自然语言编程</h3>
+                                        <p class="text-gray-300 mb-4">使用自然语言描述您的需求，Agent 会自动生成代码：</p>
+                                        <div class="bg-gray-800 rounded-lg p-4 mb-6">
+                                            <pre class="text-green-400"><code>// 在注释中描述需求
+// 请创建一个用户登录的 React 组件，包含用户名和密码输入框
+
+// Agent 会自动生成相应的 React 组件代码</code></pre>
+                                        </div>
+
+                                        <h3 class="text-xl font-semibold mb-4">项目级别重构</h3>
+                                        <p class="text-gray-300 mb-4">Agent 可以理解整个项目结构，进行跨文件的代码重构和优化。</p>
+                                    </section>
+
+                                    <!-- Remote模式 -->
+                                    <section id="doc-remote" class="doc-content-section">
+                                        <h2 class="text-3xl font-bold mb-6">☁️ Remote模式</h2>
+                                        
+                                        <h3 class="text-xl font-semibold mb-4">多任务并行</h3>
+                                        <p class="text-gray-300 mb-4">同时处理多个编程任务，提高开发效率：</p>
+                                        <div class="bg-gray-800 rounded-lg p-4 mb-6">
+                                            <pre class="text-cyan-400"><code># 启动多个并行任务
+codelink remote start
+
+# 查看任务状态
+codelink remote status
+
+# 任务1: 生成API文档
+Task 1: ✅ API documentation generated
+
+# 任务2: 代码重构
+Task 2: 🔄 Refactoring in progress...
+
+# 任务3: 单元测试生成
+Task 3: ⏳ Waiting in queue</code></pre>
+                                        </div>
+
+                                        <h3 class="text-xl font-semibold mb-4">云端同步</h3>
+                                        <p class="text-gray-300 mb-4">您的代码和设置会自动同步到云端，支持跨设备开发。</p>
+                                    </section>
+
+                                    <!-- 快捷键 -->
+                                    <section id="doc-shortcuts" class="doc-content-section">
+                                        <h2 class="text-3xl font-bold mb-6">⌨️ 快捷键</h2>
+                                        
+                                        <div class="grid md:grid-cols-2 gap-6">
+                                            <div class="glass-effect rounded-xl p-4 border border-white/10">
+                                                <h4 class="font-bold text-purple-300 mb-3">通用快捷键</h4>
+                                                <ul class="space-y-2 text-sm">
+                                                    <li><code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Shift+L</code> 打开聊天面板</li>
+                                                    <li><code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Shift+A</code> 启动 Agent 模式</li>
+                                                    <li><code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Shift+R</code> 启动 Remote 模式</li>
+                                                    <li><code class="bg-gray-800 px-2 py-1 rounded">Tab</code> 接受代码建议</li>
+                                                </ul>
+                                            </div>
+                                            <div class="glass-effect rounded-xl p-4 border border-white/10">
+                                                <h4 class="font-bold text-pink-300 mb-3">Copilot 模式</h4>
+                                                <ul class="space-y-2 text-sm">
+                                                    <li><code class="bg-gray-800 px-2 py-1 rounded">Ctrl+Space</code> 触发补全</li>
+                                                    <li><code class="bg-gray-800 px-2 py-1 rounded">Esc</code> 取消建议</li>
+                                                    <li><code class="bg-gray-800 px-2 py-1 rounded">Alt+→</code> 部分接受</li>
+                                                    <li><code class="bg-gray-800 px-2 py-1 rounded">Alt+[</code> 上一个建议</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    <!-- 常见问题 -->
+                                    <section id="doc-troubleshooting" class="doc-content-section">
+                                        <h2 class="text-3xl font-bold mb-6">❓ 常见问题</h2>
+                                        
+                                        <div class="space-y-6">
+                                            <div class="glass-effect rounded-xl p-6 border border-white/10">
+                                                <h4 class="font-bold text-purple-300 mb-3">Q: 插件无法启动怎么办？</h4>
+                                                <p class="text-gray-300">A: 请检查是否正确配置了 API 密钥，并确保网络连接正常。如果问题持续，请重启 IDE 并检查插件是否为最新版本。</p>
+                                            </div>
+                                            <div class="glass-effect rounded-xl p-6 border border-white/10">
+                                                <h4 class="font-bold text-pink-300 mb-3">Q: 代码建议不准确怎么办？</h4>
+                                                <p class="text-gray-300">A: 建议提供更多的上下文信息，包括注释和变量名。您也可以通过聊天面板直接询问具体问题。</p>
+                                            </div>
+                                            <div class="glass-effect rounded-xl p-6 border border-white/10">
+                                                <h4 class="font-bold text-blue-300 mb-3">Q: 如何提高 Agent 模式的效果？</h4>
+                                                <p class="text-gray-300">A: 尽量使用清晰、具体的自然语言描述，包含具体的需求和约束条件。避免模糊的表述。</p>
+                                            </div>
+                                            <div class="glass-effect rounded-xl p-6 border border-white/10">
+                                                <h4 class="font-bold text-cyan-300 mb-3">Q: Remote 模式的任务队列满了怎么办？</h4>
+                                                <p class="text-gray-300">A: 可以升级到专业版获得更大的任务队列容量，或者等待当前任务完成后再提交新任务。</p>
+                                            </div>
+                                        </div>
+                                    </section>
+
+                        </div>
+                    </div>
+
+                    <!-- 联系我们 -->
+                    <div id="tab-contact" class="tab-content hidden">
+                        <div class="mb-8">
+                            <h1 class="text-3xl font-bold mb-2">联系我们</h1>
+                            <p class="text-gray-400">获取技术支持和反馈建议</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                                <h3 class="text-lg font-bold mb-4">支持渠道</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-4 p-4 bg-white/5 rounded-xl">
+                                        <i class="fas fa-envelope text-blue-400 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-medium">邮箱支持</h4>
+                                            <p class="text-sm text-gray-400">support@codelink.ai</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-4 p-4 bg-white/5 rounded-xl">
+                                        <i class="fab fa-discord text-purple-400 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-medium">Discord社区</h4>
+                                            <p class="text-sm text-gray-400">加入我们的开发者社区</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-4 p-4 bg-white/5 rounded-xl">
+                                        <i class="fab fa-github text-gray-400 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-medium">GitHub Issues</h4>
+                                            <p class="text-sm text-gray-400">报告bug和功能请求</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-effect rounded-2xl p-6 border border-white/10">
+                                <h3 class="text-lg font-bold mb-4">发送反馈</h3>
+                                <form class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300 mb-1">主题</label>
+                                        <select class="w-full px-4 py-3 bg-gray-800 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                            <option>技术支持</option>
+                                            <option>功能建议</option>
+                                            <option>Bug报告</option>
+                                            <option>其他</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300 mb-1">消息内容</label>
+                                        <textarea rows="4" class="w-full px-4 py-3 bg-gray-800 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="请描述您遇到的问题或建议..."></textarea>
+                                    </div>
+                                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-pink-400/70 via-purple-400/70 to-blue-400/70 rounded-lg font-medium hover:scale-105 transition-transform">
+                                        发送消息
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查用户是否已登录
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            if (!userInfo) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // 显示用户信息
+            document.getElementById('userName').textContent = userInfo.username;
+            document.getElementById('settingsUsername').value = userInfo.username;
+            document.getElementById('settingsEmail').value = userInfo.email;
+
+            // 更新统计数据
+            updateDashboardData(userInfo);
+
+            // 初始化图表
+            initCharts();
+
+            // Tab切换功能
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 移除所有活动状态
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    
+                    // 添加当前活动状态
+                    this.classList.add('active');
+                    const targetTab = this.getAttribute('data-tab');
+                    document.getElementById(`tab-${targetTab}`).classList.remove('hidden');
+                });
+            });
+
+            // 登出功能
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('userInfo');
+                window.location.href = 'index.html';
+            });
+
+
+        });
+
+        // 更新仪表板数据
+        function updateDashboardData(userInfo) {
+            document.getElementById('conversationCount').textContent = userInfo.conversations;
+            document.getElementById('conversationUsed').textContent = userInfo.conversations;
+            document.getElementById('conversationProgress').style.width = `${(userInfo.conversations / 10) * 100}%`;
+            
+            document.getElementById('codeLines').textContent = userInfo.codeLines;
+            document.getElementById('totalCodeLines').textContent = userInfo.codeLines;
+            
+            const timeSaved = Math.floor(userInfo.codeLines / 100);
+            document.getElementById('timeSaved').textContent = timeSaved;
+            document.getElementById('totalTimeSaved').textContent = timeSaved;
+            
+            document.getElementById('currentPlan').textContent = userInfo.plan;
+        }
+
+        // 初始化图表
+        function initCharts() {
+            // 使用趋势图
+            const usageCtx = document.getElementById('usageChart').getContext('2d');
+            new Chart(usageCtx, {
+                type: 'line',
+                data: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    datasets: [{
+                        label: 'AI会话',
+                        data: [12, 19, 3, 5, 2, 3, 9],
+                        borderColor: '#a855f7',
+                        backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: '代码生成',
+                        data: [5, 8, 12, 6, 10, 15, 8],
+                        borderColor: '#ff6b9d',
+                        backgroundColor: 'rgba(255, 107, 157, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.8)'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.6)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.6)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 月度使用情况图表
+            const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+            new Chart(monthlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['一月', '二月', '三月', '四月', '五月'],
+                    datasets: [{
+                        label: '使用次数',
+                        data: [65, 59, 80, 81, 56],
+                        backgroundColor: 'rgba(168, 85, 247, 0.7)',
+                        borderColor: '#a855f7',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.8)'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.6)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.6)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 功能使用分布图表
+            const featureCtx = document.getElementById('featureChart').getContext('2d');
+            new Chart(featureCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Copilot模式', 'Agent模式', 'Remote模式'],
+                    datasets: [{
+                        data: [45, 35, 20],
+                        backgroundColor: [
+                            '#a855f7',
+                            '#ff6b9d',
+                            '#3b82f6'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.8)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html> 
